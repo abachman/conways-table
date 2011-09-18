@@ -16,18 +16,24 @@
       return this.render();
     };
     World.prototype.cache_cells = function() {
-      var cell, row, x, y, _len, _len2, _ref;
+      var cell, row, x, y, _len, _ref, _results;
       this.dom_cells = [];
       _ref = this.cells;
+      _results = [];
       for (y = 0, _len = _ref.length; y < _len; y++) {
         row = _ref[y];
         this.dom_cells.push([]);
-        for (x = 0, _len2 = row.length; x < _len2; x++) {
-          cell = row[x];
-          this.dom_cells[y].push($("#" + x + "-" + y));
-        }
+        _results.push((function() {
+          var _len2, _results2;
+          _results2 = [];
+          for (x = 0, _len2 = row.length; x < _len2; x++) {
+            cell = row[x];
+            _results2.push(this.dom_cells[y].push($("#" + x + "-" + y)));
+          }
+          return _results2;
+        }).call(this));
       }
-      return console.dir(this.dom_cells);
+      return _results;
     };
     World.prototype.update = function() {
       var c, col, row, x, y, _len, _ref, _results;
@@ -125,7 +131,6 @@
     World.prototype.set = function(pattern, point, rotation) {
       var new_pattern, row, self, value, x, y, _len, _len2;
       while (rotation % 4 !== 0) {
-        console.dir(pattern);
         new_pattern = [];
         for (y = 0, _len = pattern.length; y < _len; y++) {
           row = pattern[y];
@@ -233,7 +238,6 @@
     });
     return $(document).bind('keydown', __bind(function(event) {
       console.log(event.keyCode);
-      console.dir(event);
       if (event.keyCode === 32) {
         event.preventDefault();
         $('#modal').fadeOut();

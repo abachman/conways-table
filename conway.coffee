@@ -27,7 +27,6 @@ class World
       @dom_cells.push []
       for cell, x in row
         @dom_cells[y].push $("##{x}-#{y}")
-    console.dir @dom_cells
 
   update: ->
     for row, y in @cells
@@ -93,7 +92,6 @@ class World
   # add a pattern to the screen
   set: (pattern, point, rotation) ->
     while rotation % 4 != 0
-      console.dir pattern
       new_pattern = []
       for row, y in pattern
         new_pattern.push []
@@ -197,7 +195,6 @@ $ =>
 
   $(document).bind 'keydown', (event) =>
     console.log event.keyCode
-    console.dir event
     if event.keyCode is 32
       event.preventDefault();
       $('#modal').fadeOut();

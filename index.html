@@ -23,7 +23,9 @@
       });
     </script>
     <style>
-      td.cell { background: #fff; }
+      td.cell { 
+        background: #fff; 
+      }
       table.fade-mode td {
         -webkit-transition : background 0.2s linear;
         -moz-transition    : background 0.2s linear;
@@ -34,9 +36,11 @@
       td.dead   { background: #000; }
       .hidden { display: none; visibility: hidden; }
       td { font-size: 1px; }
-      p { line-height: 12px; font-size: 12px; margin: 0; }
+      p { line-height: 12px; font-size: 12px; 
+          margin: 0 0 6px; }
       h3 { margin: 0 0 4px; }
       #modal { 
+        color: #000; 
         position: absolute;
         background: #fff;
         width: 500px;
@@ -48,8 +52,7 @@
         z-index: 1000;
       }
       #source-wrapper {
-        overflow-x: hidden;
-        overflow-y: scroll;
+        overflow: scroll;
       }
       .mode {
         color: red;
