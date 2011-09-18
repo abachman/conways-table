@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <script src='jquery.js'></script>
+    <script src='underscore.js'></script>
+    <script src='conway.js'></script>
+    <script>
+      $(function () {
+        $.get('conway.coffee', function (request) {
+          $('#source').text(request);
+        });
+
+        $('#source-link').click(function (evt) {
+          evt.preventDefault();
+          $('#source-wrapper').toggleClass('hidden');
+          if ($('#source-wrapper').is(':visible')) {
+            var top_offset = $('#source-wrapper').offset().top,
+                total_height = $(window).height(),
+                available_height = total_height - top_offset - 40;
+
+            $('#source-wrapper').css('height', available_height + 'px');
+          }
+        });
+      });
+    </script>
+    <style>
+      td.cell { background: #fff; }
+      table.fade-mode td {
+        -webkit-transition : background 0.2s linear;
+        -moz-transition    : background 0.2s linear;
+        -o-transition      : background 0.2s linear;
+        -ms-transition     : background 0.2s linear;
+        transition         : background 0.2s linear;
+      }
+      td.dead   { background: #000; }
+      .hidden { display: none; visibility: hidden; }
+      td { font-size: 1px; }
+      p { line-height: 12px; font-size: 12px; margin: 0; }
+      h3 { margin: 0 0 4px; }
+      #modal { 
+        position: absolute;
+        background: #fff;
+        width: 500px;
+        top: 20px;
+        left: 50%;
+        padding: 20px;
+        margin-left: -260px;
+        border: 2px solid #777;
+        z-index: 1000;
+      }
+      #source-wrapper {
+        overflow-x: hidden;
+        overflow-y: scroll;
+      }
+      .mode {
+        color: red;
+        font-weight: bold;
+      } 
+      #mode-viewer {
+        padding:0;
+        margin:0;
+        position: absolute;
+        z-index: 1000;
+        left: 10px;
+        top: 10px;
+        line-height: 16px;
+      }
+
+    </style>
+    <title>conway's table</title>
+  </head>
+  <body style='margin:0; color:#777'>
+    <table height='100%' width='100%' 
+      cellspacing="0" style="margin:0px;padding:0px;">
+      <tbody id='container'></tbody>
+    </table>
+    <div id='mode-viewer'>
+      <div id='paused' class='mode'>paused</div>
+      <div id='glider' class='mode hidden'>glider</div>
+      <div id='gun' class='mode hidden'>gun</div>
+      <div id='conway' class='mode hidden'>conway</div>
+    </div>
+    <div id='modal'>
+      <h3>conway's table</h3>
+      <p><em>conway's game of life in a table</em></p>
+      <p>Press [spacebar] to start. Click to toggle a cell's state while the
+      game is stopped.</p>
+      <p>Press [g] to drop a glider instead of a point.</p>
+      <p>Press [n] to drop a Gosper glider gun instead of a point.</p>
+      <p>Press [c] to drop a Conway instead of a point.</p>
+      <p>Press [b] to clear <strong>all the cells</strong>.</p>
+      <p>Press [f] to toggle fade mode.</p>
+      <a id='source-link' href='conway.coffee'>source</a>
+      <div id='source-wrapper' class='hidden'>
+        <pre><code id='source'>
+        </code></pre>
+      </div>
+    </div>
+  </body>
+</html>

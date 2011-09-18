@@ -1,0 +1,1 @@
+watch('conway.coffee') { puts Time.new; system "coffee -c conway.coffee" }
