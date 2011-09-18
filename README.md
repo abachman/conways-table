@@ -17,6 +17,8 @@ compiles.
 Run `python -m SimpleHTTPServer` to run a local server, visit
 http://localhost:8000 and go crazy.
 
+GO CRAZY FOR REALS.
+
 ### Background Track
 
 Bassnectar - *Bass Head*
