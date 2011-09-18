@@ -182,7 +182,7 @@
     y = 0;
     x = 0;
     size = 40;
-    delay = 10;
+    delay = 30;
     while (y < size) {
       map.push([]);
       while (x < size * 2) {

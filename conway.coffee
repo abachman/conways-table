@@ -125,7 +125,7 @@ $ =>
   y = 0
   x = 0
   size = 40 # of grid
-  delay = 10 # between steps
+  delay = 30 # between steps
   while y < size
     map.push []
     while x < size * 2
