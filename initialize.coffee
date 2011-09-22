@@ -85,31 +85,32 @@ $ =>
 
     set_mode_labels()
 
-  $('#set-delay').change ->
-    value = parseInt($('#set-delay').val())
-    if typeof value == 'number' and value <= 500 and value >= 0
-      window.DELAY = value
-      $('#show-delay').text(value)
+  initialize_controls = ->
+    $('#set-delay').change ->
+      value = parseInt($('#set-delay').val())
+      if typeof value == 'number' and value <= 500 and value >= 0
+        window.DELAY = value
+        $('#show-delay').text(value)
 
-  $('#grid-density').change ->
-    value = $('#grid-density').val().split(',')
+    $('#grid-density').change ->
+      value = $('#grid-density').val().split(',')
 
-    x = parseInt(value[0])
-    y = parseInt(value[1])
+      x = parseInt(value[0])
+      y = parseInt(value[1])
 
-    if typeof x is 'number' and x > 0 and typeof y is 'number' and y > 0
-      # defined by conway and overridden conway-canvas
-      world.initialize_grid x, y
+      if typeof x is 'number' and x > 0 and typeof y is 'number' and y > 0
+        # defined by conway and overridden conway-canvas
+        world.initialize_grid x, y
 
-  $('#source-link').click (evt) ->
-    evt.preventDefault()
-    console.log 'clicked!'
-    $('#source-wrapper').toggleClass('hidden')
-    if $('#source-wrapper').is(':visible')
-      top_offset = $('#source-wrapper').offset().top
-      total_height = $(window).height()
-      available_height = total_height - top_offset - 40
-      $('#source-wrapper').css('height', available_height + 'px')
+    $('#source-link').click (evt) ->
+      evt.preventDefault()
+      console.log 'clicked!'
+      $('#source-wrapper').toggleClass('hidden')
+      if $('#source-wrapper').is(':visible')
+        top_offset = $('#source-wrapper').offset().top
+        total_height = $(window).height()
+        available_height = total_height - top_offset - 40
+        $('#source-wrapper').css('height', available_height + 'px')
 
   $.get '_modes.html', (request) ->
     $('#mode-viewer').html(request)
@@ -117,3 +118,4 @@ $ =>
   $.get '_instructions.html', (request) ->
     $('#modal').html(request)
     setTimeout((->$('#modal').addClass('animate-movement').removeClass('offscreen')), 100)
+    initialize_controls()

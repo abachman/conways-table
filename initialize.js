@@ -6,7 +6,7 @@
     a_glider: [[0, 0, 1], [1, 0, 1], [0, 1, 1]]
   };
   $(__bind(function() {
-    var pause, runner, running, set_mode_labels, world;
+    var initialize_controls, pause, runner, running, set_mode_labels, world;
     runner = null;
     running = false;
     world = create_world(40, 20, $('#container'));
@@ -76,35 +76,37 @@
       }
       return set_mode_labels();
     }, this));
-    $('#set-delay').change(function() {
-      var value;
-      value = parseInt($('#set-delay').val());
-      if (typeof value === 'number' && value <= 500 && value >= 0) {
-        window.DELAY = value;
-        return $('#show-delay').text(value);
-      }
-    });
-    $('#grid-density').change(function() {
-      var value, x, y;
-      value = $('#grid-density').val().split(',');
-      x = parseInt(value[0]);
-      y = parseInt(value[1]);
-      if (typeof x === 'number' && x > 0 && typeof y === 'number' && y > 0) {
-        return world.initialize_grid(x, y);
-      }
-    });
-    $('#source-link').click(function(evt) {
-      var available_height, top_offset, total_height;
-      evt.preventDefault();
-      console.log('clicked!');
-      $('#source-wrapper').toggleClass('hidden');
-      if ($('#source-wrapper').is(':visible')) {
-        top_offset = $('#source-wrapper').offset().top;
-        total_height = $(window).height();
-        available_height = total_height - top_offset - 40;
-        return $('#source-wrapper').css('height', available_height + 'px');
-      }
-    });
+    initialize_controls = function() {
+      $('#set-delay').change(function() {
+        var value;
+        value = parseInt($('#set-delay').val());
+        if (typeof value === 'number' && value <= 500 && value >= 0) {
+          window.DELAY = value;
+          return $('#show-delay').text(value);
+        }
+      });
+      $('#grid-density').change(function() {
+        var value, x, y;
+        value = $('#grid-density').val().split(',');
+        x = parseInt(value[0]);
+        y = parseInt(value[1]);
+        if (typeof x === 'number' && x > 0 && typeof y === 'number' && y > 0) {
+          return world.initialize_grid(x, y);
+        }
+      });
+      return $('#source-link').click(function(evt) {
+        var available_height, top_offset, total_height;
+        evt.preventDefault();
+        console.log('clicked!');
+        $('#source-wrapper').toggleClass('hidden');
+        if ($('#source-wrapper').is(':visible')) {
+          top_offset = $('#source-wrapper').offset().top;
+          total_height = $(window).height();
+          available_height = total_height - top_offset - 40;
+          return $('#source-wrapper').css('height', available_height + 'px');
+        }
+      });
+    };
     $.get('_modes.html', function(request) {
       $('#mode-viewer').html(request);
       return setTimeout((function() {
@@ -113,9 +115,10 @@
     });
     return $.get('_instructions.html', function(request) {
       $('#modal').html(request);
-      return setTimeout((function() {
+      setTimeout((function() {
         return $('#modal').addClass('animate-movement').removeClass('offscreen');
       }), 100);
+      return initialize_controls();
     });
   }, this));
 }).call(this);
