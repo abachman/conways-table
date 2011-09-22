@@ -38,9 +38,9 @@ $ =>
 
   set_mode_labels = () ->
     if running 
-      $('#mode-viewer').addClass 'offscreen-left'
+      $('#mode-viewer').addClass 'offscreen'
     else
-      $('#mode-viewer').removeClass 'offscreen-left'
+      $('#mode-viewer').removeClass 'offscreen'
 
     $('.mode').addClass 'invisible'
     if world.setting_mode == ''
@@ -49,16 +49,17 @@ $ =>
       $("##{world.setting_mode}").removeClass 'invisible'
 
   pause = (show_modal) => 
-    $('#modal').removeClass('offscreen-top') if show_modal
+    $('#modal').removeClass('offscreen') if show_modal
     clearInterval runner
     running = false
+
 
   $(document).bind 'keydown', (event) =>
     # console.log event.keyCode
     switch event.keyCode
       when 32 # spacebar
         event.preventDefault()
-        $('#modal').addClass('offscreen-top')
+        $('#modal').addClass('offscreen')
         if running
           pause()
         else
@@ -109,3 +110,10 @@ $ =>
       total_height = $(window).height()
       available_height = total_height - top_offset - 40
       $('#source-wrapper').css('height', available_height + 'px')
+
+  $.get '_modes.html', (request) ->
+    $('#mode-viewer').html(request)
+    setTimeout((->$('#mode-viewer').addClass('animate-movement').removeClass('offscreen')), 100)
+  $.get '_instructions.html', (request) ->
+    $('#modal').html(request)
+    setTimeout((->$('#modal').addClass('animate-movement').removeClass('offscreen')), 100)

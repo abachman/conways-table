@@ -16,18 +16,20 @@
     }, 0);
     set_mode_labels = function() {
       if (running) {
-        $('#mode-viewer').addClass('offscreen-left');
+        $('#mode-viewer').addClass('offscreen');
       } else {
-        $('#mode-viewer').removeClass('offscreen-left');
+        $('#mode-viewer').removeClass('offscreen');
       }
-      $('.mode').addClass('hidden');
-      if (world.setting_mode !== '') {
-        return $("#" + world.setting_mode).removeClass('hidden');
+      $('.mode').addClass('invisible');
+      if (world.setting_mode === '') {
+        return $("#toggle").removeClass('invisible');
+      } else {
+        return $("#" + world.setting_mode).removeClass('invisible');
       }
     };
     pause = __bind(function(show_modal) {
       if (show_modal) {
-        $('#modal').removeClass('offscreen-top');
+        $('#modal').removeClass('offscreen');
       }
       clearInterval(runner);
       return running = false;
@@ -36,7 +38,7 @@
       switch (event.keyCode) {
         case 32:
           event.preventDefault();
-          $('#modal').addClass('offscreen-top');
+          $('#modal').addClass('offscreen');
           if (running) {
             pause();
           } else {
@@ -91,7 +93,7 @@
         return world.initialize_grid(x, y);
       }
     });
-    return $('#source-link').click(function(evt) {
+    $('#source-link').click(function(evt) {
       var available_height, top_offset, total_height;
       evt.preventDefault();
       console.log('clicked!');
@@ -102,6 +104,18 @@
         available_height = total_height - top_offset - 40;
         return $('#source-wrapper').css('height', available_height + 'px');
       }
+    });
+    $.get('_modes.html', function(request) {
+      $('#mode-viewer').html(request);
+      return setTimeout((function() {
+        return $('#mode-viewer').addClass('animate-movement').removeClass('offscreen');
+      }), 100);
+    });
+    return $.get('_instructions.html', function(request) {
+      $('#modal').html(request);
+      return setTimeout((function() {
+        return $('#modal').addClass('animate-movement').removeClass('offscreen');
+      }), 100);
     });
   }, this));
 }).call(this);
