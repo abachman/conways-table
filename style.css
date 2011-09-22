@@ -10,6 +10,7 @@ table.fade-mode td {
 }
 td.dead   { background: #000; }
 .hidden { display: none; visibility: hidden; }
+.invisible { opacity: 0; }
 td { font-size: 1px; }
 p { line-height: 12px; font-size: 12px; 
     margin: 0 0 6px; }
@@ -38,6 +39,11 @@ h3 { margin: 0 0 4px; }
 }
 
 .mode {
+  -webkit-transition: opacity 0.4s ease-out;
+  -moz-transition:    opacity 0.4s ease-out;
+  transition:         opacity 0.4s ease-out;
+
+  opacity: 1.0;
   color: red;
   font-weight: bold;
 } 

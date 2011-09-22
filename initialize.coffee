@@ -42,9 +42,11 @@ $ =>
     else
       $('#mode-viewer').removeClass 'offscreen-left'
 
-    $('.mode').addClass 'hidden'
-    unless world.setting_mode == ''
-      $("##{world.setting_mode}").removeClass 'hidden'
+    $('.mode').addClass 'invisible'
+    if world.setting_mode == ''
+      $("#toggle").removeClass 'invisible'
+    else
+      $("##{world.setting_mode}").removeClass 'invisible'
 
   pause = (show_modal) => 
     $('#modal').removeClass('offscreen-top') if show_modal
