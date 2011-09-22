@@ -33,6 +33,9 @@ $ =>
   # defined by conway and overridden conway-canvas
   world = create_world(40, 20, $('#container'))
 
+  # somethin on screen
+  world.set PATTERNS.a_glider, {x: 2, y: 2}, 0
+
   set_mode_labels = () ->
     if running 
       $('#mode-viewer').addClass 'offscreen-left'

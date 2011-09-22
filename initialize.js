@@ -10,6 +10,10 @@
     runner = null;
     running = false;
     world = create_world(40, 20, $('#container'));
+    world.set(PATTERNS.a_glider, {
+      x: 2,
+      y: 2
+    }, 0);
     set_mode_labels = function() {
       if (running) {
         $('#mode-viewer').addClass('offscreen-left');
