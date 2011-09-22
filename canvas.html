@@ -3,25 +3,25 @@
     <script src='jquery.js'></script>
     <script src='underscore.js'></script>
     <script src='conway.js'></script>
+    <script src='conway-canvas.js'></script>
     <script src='initialize.js'></script>
+
     <script>
       // put delay in global scope
       var DELAY = 50;
 
       $(function () {
-        $.get('conway.coffee', function (request) {
+        // version of conway for this page
+        $.get('conway-canvas.coffee', function (request) {
           $('#source').text(request);
         });
       });
     </script>
-    <title>conway's table</title>
+    <title>conway's canvas</title>
     <link rel='stylesheet' href='style.css' />
   </head>
   <body style='margin:0; color:#777'>
-    <table height='100%' width='100%' 
-      cellspacing="0" style="margin:0px;padding:0px;">
-      <tbody id='container'></tbody>
-    </table>
+    <canvas id='container'></canvas>
     <div id='mode-viewer'>
       <div id='paused'>paused</div>
       <div id='glider' class='mode hidden'>glider</div>
@@ -30,19 +30,30 @@
     </div>
     <div id='modal'>
       <h3>conway's table</h3>
-      <p><em>conway's game of life in a table</em></p>
-      <p>Also checkout <a href='canvas.html'>conway's canvas</a>, this but with the canvas tag</p>
+      <p><em>conway's game of life in on canvas</em></p>
+      <p>Also checkout <a href='index.html'>conway's table</a>, this but with html table tags</p>
       <p>Press [spacebar] to start and pause.</p>
       <p>[esc] or [?] to show this screen.</p>
       <p>Press [g] to drop a glider instead of a point.</p>
       <p>Press [n] to drop a Gosper glider gun instead of a point.</p>
       <p>Press [c] to drop a Conway instead of a point.</p>
       <p>Press [b] to clear <strong>all the cells</strong>.</p>
-      <p>Press [f] to toggle fade mode.</p>
+      <!-- <p>Press [e] to toggle generational coloring.</p> -->
+      <p>Also checkout <a href='index.html'>conway's table</a>, this but with html table tags</p>
       <p>Set delay between frames (in milliseconds): 
         <input id='set-delay' type='range' min='0' max='500' value='50' />
         <span id='show-delay'>50</span>
       </p>
+      <p>Set grid density <select id='grid-density'>
+        <option value='10,5'>10x5</option>
+        <option value='20,10'>20x10</option>
+        <option value='40,20' selected='selected'>40x20</option>
+        <option value='80,40'>80x40</option>
+        <option value='160,80'>160x80</option>
+        <option value='320,160'>320x160</option>
+        <option value='640,320'>640x320</option>
+        <option value='1280,640'>1280x640</option>
+      </select> <em>grid will reset</em></p>
       <a id='source-link' href='conway.coffee'>source</a>
       <div id='source-wrapper' class='hidden'>
         <pre><code id='source'>

@@ -1,1 +1,9 @@
-watch('conway.coffee') { puts Time.new; system "coffee -c conway.coffee" }
+watch(/.*\.coffee/) { 
+  puts Time.new; 
+  system "coffee -c *.coffee" 
+}
+
+watch('upload') {
+  puts 'uploading'
+  system "rsync -rvt ./ dreamhost:~/adambachman.org/public/dcamp/ --exclude=.git/"
+}

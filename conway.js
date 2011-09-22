@@ -1,16 +1,36 @@
 (function() {
   var World;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  World = (function() {
-    function World(cells, display) {
-      this.cells = cells;
+  window.World = World = (function() {
+    function World(x, y, display) {
       this.display = display;
-      this.height = this.cells.length;
-      this.width = this.cells[0].length;
       this.neighbor_matrix = [[[-1, -1], [0, -1], [1, -1]], [[-1, 0], [1, 0]], [[-1, 1], [0, 1], [1, 1]]];
-      this.draw();
-      this.cache_cells();
+      this.initialize_grid(x, y);
+      this.setting_mode = '';
+      this.generational_coloring = false;
+      console.log("INITIALIZED " + this.width + "x" + this.height + " WORLD");
     }
+    World.prototype.initialize_grid = function(x, y) {
+      this.width = x;
+      this.height = y;
+      y = 0;
+      x = 0;
+      this.cells = [];
+      while (y < this.height) {
+        this.cells.push([]);
+        while (x < this.width) {
+          this.cells[y].push([0, 0, 0]);
+          x += 1;
+        }
+        y += 1;
+        x = 0;
+      }
+      this.draw_cells();
+      this.cache_cells();
+      return this.bind_click();
+    };
+    World.prototype.dom_target = function() {
+      return $('td', this.display);
+    };
     World.prototype.next = function() {
       this.update();
       return this.render();
@@ -47,16 +67,19 @@
           for (x = 0, _len2 = row.length; x < _len2; x++) {
             col = row[x];
             c = this.neighbor_count(x, y);
-            _results2.push(col[0] === 1 ? c === 2 || c === 3 ? col[1] = 1 : col[1] = 0 : col[0] === 0 ? c === 3 ? col[1] = 1 : void 0 : void 0);
+            _results2.push(col[0] === 1 ? c === 2 || c === 3 ? (col[1] = 1, col[2] = col[2] + 1) : (col[1] = 0, col[2] = 0) : col[0] === 0 ? c === 3 ? (col[1] = 1, col[2] = 1) : void 0 : void 0);
           }
           return _results2;
         }).call(this));
       }
       return _results;
     };
-    World.prototype.draw = function() {
+    World.prototype.draw_cells = function() {
       var cell, out, row, x, y, _len, _len2, _ref;
-      $(this.display).empty();
+      console.log("regular world draw");
+      console.dir(this.display);
+      console.dir($(this.display));
+      this.display.empty();
       out = [];
       _ref = this.cells;
       for (y = 0, _len = _ref.length; y < _len; y++) {
@@ -64,11 +87,18 @@
         out.push("<tr>");
         for (x = 0, _len2 = row.length; x < _len2; x++) {
           cell = row[x];
-          out.push("<td data-point='" + x + "," + y + "'                  class='cell fade-cell " + (this.state(cell)) + "'                  id='" + x + "-" + y + "'>&nbsp;</td>");
+          out.push("<td data-point='" + x + "," + y + "' class='cell dead' id='" + x + "-" + y + "'>&nbsp;</td>");
         }
         out.push('</tr>');
       }
-      return $(this.display).html(out.join());
+      return this.display.html(out.join(''));
+    };
+    World.prototype.draw_cell = function(x, y) {
+      if (this.cells[y][x][0] === 0) {
+        return this.dom_cells[y][x].addClass('dead');
+      } else {
+        return this.dom_cells[y][x].removeClass('dead');
+      }
     };
     World.prototype.render = function() {
       var cell, row, x, y, _len, _ref, _results;
@@ -81,11 +111,11 @@
           _results2 = [];
           for (x = 0, _len2 = row.length; x < _len2; x++) {
             cell = row[x];
-            if (cell[0] === cell[1]) {
+            if (cell[0] === cell[1] && !this.generational_coloring) {
               continue;
             }
             cell[0] = cell[1];
-            _results2.push(this.dom_cells[y][x].toggleClass('dead'));
+            _results2.push(this.draw_cell(x, y));
           }
           return _results2;
         }).call(this));
@@ -100,33 +130,35 @@
       }
     };
     World.prototype.neighbor_count = function(x, y) {
-      var living, self;
+      var coords, living, nx, ny, row, self, _i, _j, _len, _len2, _ref;
       living = 0;
       self = this;
-      _.each(this.neighbor_matrix, function(row) {
-        return _.each(row, function(coords) {
-          var nx, ny;
+      _ref = this.neighbor_matrix;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        row = _ref[_i];
+        for (_j = 0, _len2 = row.length; _j < _len2; _j++) {
+          coords = row[_j];
           nx = coords[0] + x;
           if (nx < 0) {
-            nx = self.width + nx;
+            nx += self.width;
           } else if (nx >= self.width) {
-            nx = coords[0] + x - self.width;
+            nx -= self.width;
           }
           ny = coords[1] + y;
           if (ny < 0) {
-            ny = self.height + ny;
+            ny += self.height;
           } else if (ny >= self.height) {
-            ny = coords[1] + y - self.height;
+            ny -= self.height;
           }
-          return living += self.cells[ny][nx][0];
-        });
-      });
+          living += self.cells[ny][nx][0];
+        }
+      }
       return living;
     };
-    World.prototype.toggle = function(coords) {
+    World.prototype.toggle = function(point) {
       var x, y;
-      x = coords.x, y = coords.y;
-      return this.cells[y][x] = this.cells[y][x][0] === 0 ? [1, 1] : [0, 0];
+      x = point.x, y = point.y;
+      return this.cells[y][x] = this.cells[y][x][0] === 0 ? [1, 1, 1] : [0, 0, 0];
     };
     World.prototype.set = function(pattern, point, rotation) {
       var new_pattern, row, self, value, x, y, _len, _len2;
@@ -148,15 +180,21 @@
         return _.each(row, function(value, px) {
           var nx, ny;
           nx = point.x + px;
-          ny = point.y + py;
-          if (nx >= 0 && ny >= 0 && nx < self.width && ny < self.height) {
-            self.cells[ny][nx] = [value, value];
-            if (value === 0) {
-              return self.dom_cells[ny][nx].addClass('dead');
-            } else {
-              return self.dom_cells[ny][nx].removeClass('dead');
-            }
+          if (nx < 0) {
+            nx += self.width;
+          } else if (nx >= self.width) {
+            nx -= self.width;
           }
+          ny = point.y + py;
+          if (ny < 0) {
+            ny += self.height;
+          } else if (ny >= self.height) {
+            ny -= self.height;
+          }
+          self.cells[ny][nx][0] = value;
+          self.cells[ny][nx][1] = value;
+          self.cells[ny][nx][2] = value;
+          return self.draw_cell(nx, ny);
         });
       });
     };
@@ -171,101 +209,59 @@
           _results2 = [];
           for (x = 0, _len2 = row.length; x < _len2; x++) {
             cell = row[x];
-            this.cells[y][x] = [0, 0];
-            _results2.push(this.dom_cells[y][x].addClass('dead'));
+            this.cells[y][x] = [0, 0, 0];
+            _results2.push(this.draw_cell(x, y));
           }
           return _results2;
         }).call(this));
       }
       return _results;
     };
-    return World;
-  })();
-  $(__bind(function() {
-    var a_conway, a_glider, a_gun, delay, map, runner, running, set_mode_labels, setting_mode, size, world, x, y;
-    map = [];
-    y = 0;
-    x = 0;
-    size = 40;
-    delay = 30;
-    while (y < size) {
-      map.push([]);
-      while (x < size * 2) {
-        map[y].push([0, 0]);
-        x += 1;
-      }
-      y += 1;
-      x = 0;
-    }
-    world = new World(map, $('#container'));
-    a_gun = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0], [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
-    a_conway = [[0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1], [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0], [0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0]];
-    a_glider = [[0, 0, 1], [1, 0, 1], [0, 1, 1]];
-    runner = null;
-    running = false;
-    setting_mode = '';
-    set_mode_labels = function() {
-      $('.mode').addClass('hidden');
-      if (!running) {
-        $('#paused').removeClass('hidden');
-      }
-      if (setting_mode !== '') {
-        return $("#" + setting_mode).removeClass('hidden');
-      }
+    World.prototype.random_rotation = function() {
+      return Math.floor(Math.random() * 4);
     };
-    $('#container td').bind('click', function() {
-      var point, rotation;
-      $(this).toggleClass('dead');
-      point = $(this).data('point').split(',');
-      point = {
+    World.prototype.get_clicked_point = function(evt) {
+      var point;
+      point = $(evt.target).data('point').split(',');
+      return {
         x: parseInt(point[0]),
         y: parseInt(point[1])
       };
-      rotation = Math.floor(Math.random() * 4);
-      if (setting_mode === 'glider') {
-        console.log('glider');
-        return world.set(a_glider, point, rotation);
-      } else if (setting_mode === 'gun') {
-        console.log('gun');
-        return world.set(a_gun, point, 0);
-      } else if (setting_mode === 'conway') {
-        console.log('conway');
-        return world.set(a_conway, point, 0);
-      } else {
-        console.log('point');
-        return world.toggle(point);
-      }
-    });
-    return $(document).bind('keydown', __bind(function(event) {
-      console.log(event.keyCode);
-      if (event.keyCode === 32) {
-        event.preventDefault();
-        $('#modal').fadeOut();
-        if (running) {
-          clearInterval(runner);
-          running = false;
-        } else {
-          runner = setInterval((function() {
-            return world.next();
-          }), delay);
-          running = true;
+    };
+    World.prototype.bind_click = function() {
+      var self;
+      self = this;
+      this.dom_target().unbind();
+      return this.dom_target().bind('click', function(evt) {
+        var point;
+        point = self.get_clicked_point(evt);
+        switch (self.setting_mode) {
+          case 'glider':
+            console.log('glider');
+            return self.set(PATTERNS.a_glider, point, self.random_rotation());
+          case 'gun':
+            console.log('gun');
+            return self.set(PATTERNS.a_gun, point, 0);
+          case 'conway':
+            console.log('conway');
+            return self.set(PATTERNS.a_conway, point, 0);
+          default:
+            console.log('point');
+            self.toggle(point);
+            return self.draw_cell(point.x, point.y);
         }
-      } else if (event.keyCode === 71) {
-        setting_mode = setting_mode === 'glider' ? '' : 'glider';
-      } else if (event.keyCode === 78) {
-        setting_mode = setting_mode === 'gun' ? '' : 'gun';
-      } else if (event.keyCode === 67) {
-        setting_mode = setting_mode === 'conway' ? '' : 'conway';
-      } else if (event.keyCode === 66) {
-        world.clear();
-      } else if (event.keyCode === 70) {
-        $('table').toggleClass('fade-mode');
-      } else if (event.keyCode === 27 || (event.keyCode === 191 && event.shiftKey)) {
-        $('#modal').fadeIn();
-        clearInterval(runner);
-        running = false;
-      }
-      return set_mode_labels();
-    }, this));
-  }, this));
+      });
+    };
+    World.prototype.toggle_mode = function(mode) {
+      return this.setting_mode = this.setting_mode === mode ? '' : mode;
+    };
+    World.prototype.toggle_generational_coloring = function() {
+      return this.generational_coloring = !generational_coloring;
+    };
+    return World;
+  })();
+  window.create_world = function(x, y, container) {
+    console.log("creating table world");
+    return new World(x, y, container);
+  };
 }).call(this);
