@@ -29,9 +29,11 @@ window.PATTERNS =
 # dimensions of a single pixel
 window.PIXEL = 16;
 
+# current activity
+window.running = false
+
 $ =>
   runner = null
-  running = false
 
   # defined by conway and overridden conway-canvas
   world = create_world(40, 20, 16, $('#container'))
@@ -51,11 +53,15 @@ $ =>
     else
       $("##{world.setting_mode}").removeClass 'invisible'
 
-  pause = (show_modal) => 
+  window.pause = (show_modal) => 
     $('#modal').removeClass('offscreen') if show_modal
     clearInterval runner
-    running = false
+    window.running = false
 
+  window.start = =>
+    # START
+    runner = setInterval((-> world.next()), window.DELAY)
+    window.running = true
 
   $(document).bind 'keydown', (event) =>
     # console.log event.keyCode
@@ -66,9 +72,7 @@ $ =>
         if running
           pause()
         else
-          # START
-          runner = setInterval((-> world.next()), window.DELAY)
-          running = true
+          start()
       when 71 # g
         world.toggle_mode 'glider'
       when 78 # n

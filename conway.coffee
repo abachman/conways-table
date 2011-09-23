@@ -191,15 +191,23 @@ window.World = class World
     self = this
     @dom_target().unbind()
 
-    _tracking = false
-
+    self.was_running = false
+    self.tracking = false
     @dom_target().bind 'mousedown', (evt) ->
+      self.was_running = window.running
       console.log 'mousedown'
-      @dom_target().bind 'hover', (evt) ->
-        console.log "tracking #{evt.offsetX}, #{evt.offsetY}"
+      window.pause() if window.pause?
+      self.dom_target().bind 'mousemove', (evt) ->
+        self.tracking = true
+        {x, y} = self.get_clicked_point(evt)
+        unless self.cells[y][x][0] is 1
+          self.cells[y][x] = [1,1,1]
+          self.draw_cell x, y 
+
 
     @dom_target().bind 'mouseup', (evt) ->
-      @dom_target().unbind 'hover'
+      self.dom_target().unbind 'mousemove'
+      window.start() if window.start? and self.was_running
 
     @dom_target().bind 'click', (evt) ->
       point = self.get_clicked_point(evt)
@@ -214,9 +222,11 @@ window.World = class World
           console.log 'conway'
           self.set PATTERNS.a_conway, point, 0
         else
-          console.log 'point'
-          self.toggle point
-          self.draw_cell point.x, point.y 
+          if !self.tracking
+            console.log 'point'
+            self.toggle point
+            self.draw_cell point.x, point.y 
+      self.tracking = false
 
   toggle_mode: (mode) ->
     @setting_mode = if @setting_mode == mode then '' else mode

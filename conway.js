@@ -235,24 +235,54 @@
       var self;
       self = this;
       this.dom_target().unbind();
+      self.was_running = false;
+      self.tracking = false;
+      this.dom_target().bind('mousedown', function(evt) {
+        self.was_running = window.running;
+        console.log('mousedown');
+        if (window.pause != null) {
+          window.pause();
+        }
+        return self.dom_target().bind('mousemove', function(evt) {
+          var x, y, _ref;
+          self.tracking = true;
+          _ref = self.get_clicked_point(evt), x = _ref.x, y = _ref.y;
+          if (self.cells[y][x][0] !== 1) {
+            self.cells[y][x] = [1, 1, 1];
+            return self.draw_cell(x, y);
+          }
+        });
+      });
+      this.dom_target().bind('mouseup', function(evt) {
+        self.dom_target().unbind('mousemove');
+        if ((window.start != null) && self.was_running) {
+          return window.start();
+        }
+      });
       return this.dom_target().bind('click', function(evt) {
         var point;
         point = self.get_clicked_point(evt);
         switch (self.setting_mode) {
           case 'glider':
             console.log('glider');
-            return self.set(PATTERNS.a_glider, point, self.random_rotation());
+            self.set(PATTERNS.a_glider, point, self.random_rotation());
+            break;
           case 'gun':
             console.log('gun');
-            return self.set(PATTERNS.a_gun, point, 0);
+            self.set(PATTERNS.a_gun, point, 0);
+            break;
           case 'conway':
             console.log('conway');
-            return self.set(PATTERNS.a_conway, point, 0);
+            self.set(PATTERNS.a_conway, point, 0);
+            break;
           default:
-            console.log('point');
-            self.toggle(point);
-            return self.draw_cell(point.x, point.y);
+            if (!self.tracking) {
+              console.log('point');
+              self.toggle(point);
+              self.draw_cell(point.x, point.y);
+            }
         }
+        return self.tracking = false;
       });
     };
     World.prototype.toggle_mode = function(mode) {

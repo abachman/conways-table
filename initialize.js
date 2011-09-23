@@ -6,10 +6,10 @@
     a_glider: [[0, 0, 1], [1, 0, 1], [0, 1, 1]]
   };
   window.PIXEL = 16;
+  window.running = false;
   $(__bind(function() {
-    var initialize_controls, pause, runner, running, set_mode_labels, world;
+    var initialize_controls, runner, set_mode_labels, world;
     runner = null;
-    running = false;
     world = create_world(40, 20, 16, $('#container'));
     world.set(PATTERNS.a_glider, {
       x: 2,
@@ -28,12 +28,18 @@
         return $("#" + world.setting_mode).removeClass('invisible');
       }
     };
-    pause = __bind(function(show_modal) {
+    window.pause = __bind(function(show_modal) {
       if (show_modal) {
         $('#modal').removeClass('offscreen');
       }
       clearInterval(runner);
-      return running = false;
+      return window.running = false;
+    }, this);
+    window.start = __bind(function() {
+      runner = setInterval((function() {
+        return world.next();
+      }), window.DELAY);
+      return window.running = true;
     }, this);
     $(document).bind('keydown', __bind(function(event) {
       switch (event.keyCode) {
@@ -43,10 +49,7 @@
           if (running) {
             pause();
           } else {
-            runner = setInterval((function() {
-              return world.next();
-            }), window.DELAY);
-            running = true;
+            start();
           }
           break;
         case 71:
