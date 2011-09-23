@@ -190,9 +190,19 @@ window.World = class World
   bind_click: ->
     self = this
     @dom_target().unbind()
+
+    _tracking = false
+
+    @dom_target().bind 'mousedown', (evt) ->
+      console.log 'mousedown'
+      @dom_target().bind 'hover', (evt) ->
+        console.log "tracking #{evt.offsetX}, #{evt.offsetY}"
+
+    @dom_target().bind 'mouseup', (evt) ->
+      @dom_target().unbind 'hover'
+
     @dom_target().bind 'click', (evt) ->
       point = self.get_clicked_point(evt)
-
       switch self.setting_mode
         when 'glider'
           console.log 'glider'
