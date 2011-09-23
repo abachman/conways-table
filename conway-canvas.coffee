@@ -9,20 +9,64 @@ window.CanvasWorld = class CanvasWorld extends World
       c = 255
     "rgb(#{c}, #{c}, #{c})"
 
+  correct_array_for_length: (arr, push, len) ->
+    # either push rows or cells
+    if arr.length < len
+      if push == 'row'
+        arr.push []
+      else
+        arr.push [0, 0, 0]
+
+      while arr.length < len
+        if push == 'row'
+          arr.push []
+        else 
+          arr.push [0, 0, 0]
+
+    if arr.length > len
+      arr.pop()
+      while arr.length > len
+        arr.pop()
+
+  initialize_grid: (x, y, cell_size) ->
+    # height and width of each cell
+    @cell_size = cell_size
+
+    @cells ?= []
+
+    # get canvas
+    @canvas = window.document.getElementById @display.attr('id')
+    @context = @canvas.getContext('2d')
+
+    @set_dimensions()
+
   # force @display to fill the window
   set_dimensions: ->
+
+    # how big is the screen
     @screen_width = window.innerWidth
     @screen_height = window.innerHeight
     
     # set step size
-    @step_x = Math.floor(@screen_width / @width)
-    @step_y = Math.floor(@screen_height / @height)
+    @step_x = @cell_size # Math.floor(@screen_width / @width)
+    @step_y = @cell_size # Math.floor(@screen_height / @height)
 
     # set canvas size. DO NOT USE jQuery CSS!
     @canvas.width = @screen_width
     @canvas.height = @screen_height
 
+    # of x cells
+    @width = Math.floor(@screen_width / @cell_size)
+    # of y cells
+    @height = Math.floor(@screen_height / @cell_size)
+
+    @correct_array_for_length(@cells, 'row', @height)
+
+    for row in @cells
+      @correct_array_for_length(row, 'cell', @width)
+
   fill_window: ->
+    console.log "FILLING CANVAS"
     # cells are always an integer value width and height, 
     # so we color the background that we can see through the canvas
     $('body').css background: "#666"
@@ -34,10 +78,7 @@ window.CanvasWorld = class CanvasWorld extends World
   # one time only, draw world
   draw_cells: () ->
     # load drawing surface
-    @canvas = window.document.getElementById @display.attr('id')
-    @context = @canvas.getContext('2d')
 
-    @set_dimensions()
     @fill_window()
     
     $(window).resize =>
@@ -65,7 +106,7 @@ window.CanvasWorld = class CanvasWorld extends World
     @context.fillRect x * @step_x, y * @step_y, @step_x, @step_y
 
 # load world into container
-window.create_world = (x, y, container) ->
+window.create_world = (x, y, pixel, container) ->
   console.log "creating canvas world"
-  new CanvasWorld x, y, container
+  new CanvasWorld x, y, pixel, container
 

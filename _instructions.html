@@ -1,6 +1,10 @@
-<h3>conway's table</h3>
-<p><em><a href='http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life'>conway's game of life</a> in a table</em></p>
-<p>Also check out <a href='canvas.html'>conway's canvas</a>, this but with the canvas tag</p>
+<h3>conway's <%= type %></h3>
+<p><em><a href='http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life'>conway's game of life</a> in a <%= type %></em></p>
+<% if (type === 'table') { %>
+  <p>Also check out <a href='canvas.html'>conway's canvas</a>, this but with the canvas tag</p>
+<% } else { %>
+  <p>Also check out <a href='index.html'>conway's table</a>, this but with the table tag</p>
+<% } %>
 <p>Press [spacebar] to <strong>start and pause</strong>.</p>
 <p>[esc] or [?] to <strong>show this screen</strong>.</p>
 <p><strong>Click</strong> to toggle cells.</p>
@@ -13,16 +17,29 @@
   <input id='set-delay' type='range' min='0' max='200' value='50' style='width:250px;vertical-align:middle;' />
   <span id='show-delay'>50</span>
 </p>
-<p>Set grid density <select id='grid-density'>
-  <option value='10,5'>10x5</option>
-  <option value='20,10'>20x10</option>
-  <option value='40,20' selected='selected'>40x20</option>
-  <option value='80,40'>80x40</option>
-  <option value='160,80'>160x80</option>
-  <option value='320,160'>320x160</option>
-  <option value='640,320'>640x320</option>
-  <option value='1280,640'>1280x640</option>
-</select> <em>grid will reset</em></p>
+<% if (type === 'table') { %>
+  <p>Set grid density <select id='grid-density'>
+    <option value='10,5'>10x5</option>
+    <option value='20,10'>20x10</option>
+    <option value='40,20' selected='selected'>40x20</option>
+    <option value='80,40'>80x40</option>
+    <option value='160,80'>160x80</option>
+    <option value='320,160'>320x160</option>
+    <option value='640,320'>640x320</option>
+    <option value='1280,640'>1280x640</option>
+  </select> <em>grid will reset</em></p>
+<% } else { %>
+  <p>Set pixel size <select id='pixel-size'>
+    <option value='1'>1</option>
+    <option value='2'>2</option>
+    <option value='4'>4</option>
+    <option value='8' selected='selected'>8</option>
+    <option value='16'>16</option>
+    <option value='32'>32</option>
+    <option value='64'>64</option>
+    <option value='128'>128</option>
+  </select> <em>grid will reset</em></p>
+<% }; %>
 <a id='source-link' href='conway.coffee'>source</a>
 <div id='source-wrapper' class='hidden'>
   <pre><code id='source'>

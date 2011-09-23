@@ -6,7 +6,12 @@
     <script src='initialize.js'></script>
     <script>
       // put delay in global scope
-      var DELAY = 50;
+      var DELAY = 50,
+          page = {
+            title: "Table",
+            type:  'table',
+            grid_selector: ""
+          };
 
       $(function () {
         $.get('conway.coffee', function (request) {

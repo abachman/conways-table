@@ -1,20 +1,25 @@
 (function() {
   var World;
   window.World = World = (function() {
-    function World(x, y, display) {
+    function World(x, y, cell_size, display) {
       this.display = display;
       this.neighbor_matrix = [[[-1, -1], [0, -1], [1, -1]], [[-1, 0], [1, 0]], [[-1, 1], [0, 1], [1, 1]]];
-      this.initialize_grid(x, y);
+      this.initialize_grid(x, y, cell_size);
+      this.draw_cells();
+      this.cache_cells();
+      this.bind_click();
       this.setting_mode = '';
       this.generational_coloring = false;
       console.log("INITIALIZED " + this.width + "x" + this.height + " WORLD");
     }
     World.prototype.initialize_grid = function(x, y) {
+      var _results;
       this.width = x;
       this.height = y;
       y = 0;
       x = 0;
       this.cells = [];
+      _results = [];
       while (y < this.height) {
         this.cells.push([]);
         while (x < this.width) {
@@ -22,11 +27,9 @@
           x += 1;
         }
         y += 1;
-        x = 0;
+        _results.push(x = 0);
       }
-      this.draw_cells();
-      this.cache_cells();
-      return this.bind_click();
+      return _results;
     };
     World.prototype.dom_target = function() {
       return $('td', this.display);
@@ -260,8 +263,8 @@
     };
     return World;
   })();
-  window.create_world = function(x, y, container) {
+  window.create_world = function(x, y, pixel, container) {
     console.log("creating table world");
-    return new World(x, y, container);
+    return new World(x, y, pixel, container);
   };
 }).call(this);

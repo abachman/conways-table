@@ -5,11 +5,12 @@
     a_conway: [[0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1], [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1], [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0], [0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0]],
     a_glider: [[0, 0, 1], [1, 0, 1], [0, 1, 1]]
   };
+  window.PIXEL = 16;
   $(__bind(function() {
     var initialize_controls, pause, runner, running, set_mode_labels, world;
     runner = null;
     running = false;
-    world = create_world(40, 20, $('#container'));
+    world = create_world(40, 20, 16, $('#container'));
     world.set(PATTERNS.a_glider, {
       x: 2,
       y: 2
@@ -91,7 +92,15 @@
         x = parseInt(value[0]);
         y = parseInt(value[1]);
         if (typeof x === 'number' && x > 0 && typeof y === 'number' && y > 0) {
-          return world.initialize_grid(x, y);
+          return world.initialize_grid(x, y, null);
+        }
+      });
+      $('#pixel-size').change(function() {
+        var value;
+        value = parseInt($('#pixel-size').val());
+        if (typeof value === 'number' && value > 1) {
+          world.initialize_grid(null, null, value);
+          return world.fill_window();
         }
       });
       return $('#source-link').click(function(evt) {
@@ -114,7 +123,9 @@
       }), 100);
     });
     return $.get('_instructions.html', function(request) {
-      $('#modal').html(request);
+      var tmpl;
+      tmpl = _.template(request);
+      $('#modal').html(tmpl(window.page));
       setTimeout((function() {
         return $('#modal').addClass('animate-movement').removeClass('offscreen');
       }), 100);

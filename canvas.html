@@ -8,7 +8,12 @@
 
     <script>
       // put delay in global scope
-      var DELAY = 50;
+      var DELAY = 50,
+          page = {
+            title: "Canvas",
+            type:  'canvas',
+            grid_selector: ""
+          };
 
       $(function () {
         // version of conway for this page

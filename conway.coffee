@@ -3,14 +3,23 @@ window.World = class World
   # points, two element arrays [current state, next state]
   #
   # reference @cells by [y, x]
-  constructor: (x, y, @display) ->
+  constructor: (x, y, cell_size, @display) ->
     @neighbor_matrix = [
       [ [-1, -1], [0, -1], [1, -1]]
       [ [-1, 0]          , [1, 0] ]
       [ [-1, 1],  [0, 1],  [1, 1] ]
     ]
 
-    @initialize_grid(x, y)
+    @initialize_grid(x, y, cell_size)
+    
+    # draw the grid, all dead cells
+    @draw_cells()
+
+    # keep DOM elements handy
+    @cache_cells()
+
+    # bind to toggle or set
+    @bind_click()
 
     # default to toggling the clicked cell
     @setting_mode = ''
@@ -20,6 +29,7 @@ window.World = class World
 
     console.log "INITIALIZED #{@width}x#{@height} WORLD"
 
+  # build @cells array
   initialize_grid: (x, y) ->
     @width  = x
     @height = y
@@ -35,15 +45,6 @@ window.World = class World
         x += 1
       y += 1
       x = 0
-
-    # draw the grid, all dead cells
-    @draw_cells()
-
-    # keep DOM elements handy
-    @cache_cells()
-
-    # bind to toggle or set
-    @bind_click()
 
   # the element that bind_click will bind to
   dom_target: ->
@@ -213,6 +214,6 @@ window.World = class World
   toggle_generational_coloring: -> @generational_coloring = !generational_coloring
 
 # load world into container
-window.create_world = (x, y, container) ->
+window.create_world = (x, y, pixel, container) ->
   console.log "creating table world"
-  new World x, y, container
+  new World x, y, pixel, container
