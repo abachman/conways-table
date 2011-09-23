@@ -211,18 +211,18 @@ window.World = class World
 
     @dom_target().bind 'click', (evt) ->
       point = self.get_clicked_point(evt)
-      switch self.setting_mode
-        when 'glider'
-          console.log 'glider'
-          self.set PATTERNS.a_glider, point, self.random_rotation()
-        when 'gun'
-          console.log 'gun'
-          self.set PATTERNS.a_gun, point, 0
-        when 'conway'
-          console.log 'conway'
-          self.set PATTERNS.a_conway, point, 0
-        else
-          if !self.tracking
+      if !self.tracking
+        switch self.setting_mode
+          when 'glider'
+            console.log 'glider'
+            self.set PATTERNS.a_glider, point, self.random_rotation()
+          when 'gun'
+            console.log 'gun'
+            self.set PATTERNS.a_gun, point, 0
+          when 'conway'
+            console.log 'conway'
+            self.set PATTERNS.a_conway, point, 0
+          else
             console.log 'point'
             self.toggle point
             self.draw_cell point.x, point.y 

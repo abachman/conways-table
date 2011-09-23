@@ -262,25 +262,25 @@
       return this.dom_target().bind('click', function(evt) {
         var point;
         point = self.get_clicked_point(evt);
-        switch (self.setting_mode) {
-          case 'glider':
-            console.log('glider');
-            self.set(PATTERNS.a_glider, point, self.random_rotation());
-            break;
-          case 'gun':
-            console.log('gun');
-            self.set(PATTERNS.a_gun, point, 0);
-            break;
-          case 'conway':
-            console.log('conway');
-            self.set(PATTERNS.a_conway, point, 0);
-            break;
-          default:
-            if (!self.tracking) {
+        if (!self.tracking) {
+          switch (self.setting_mode) {
+            case 'glider':
+              console.log('glider');
+              self.set(PATTERNS.a_glider, point, self.random_rotation());
+              break;
+            case 'gun':
+              console.log('gun');
+              self.set(PATTERNS.a_gun, point, 0);
+              break;
+            case 'conway':
+              console.log('conway');
+              self.set(PATTERNS.a_conway, point, 0);
+              break;
+            default:
               console.log('point');
               self.toggle(point);
               self.draw_cell(point.x, point.y);
-            }
+          }
         }
         return self.tracking = false;
       });
