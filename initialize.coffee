@@ -117,16 +117,6 @@ $ =>
       if typeof value is 'number' and value > 1
         world.initialize_grid null, null, value
         world.fill_window()
-        
-    $('#source-link').click (evt) ->
-      evt.preventDefault()
-      console.log 'clicked!'
-      $('#source-wrapper').toggleClass('hidden')
-      if $('#source-wrapper').is(':visible')
-        top_offset = $('#source-wrapper').offset().top
-        total_height = $(window).height()
-        available_height = total_height - top_offset - 40
-        $('#source-wrapper').css('height', available_height + 'px')
 
   $.get '_modes.html', (request) ->
     $('#mode-viewer').html(request)

@@ -98,24 +98,12 @@
           return world.initialize_grid(x, y, null);
         }
       });
-      $('#pixel-size').change(function() {
+      return $('#pixel-size').change(function() {
         var value;
         value = parseInt($('#pixel-size').val());
         if (typeof value === 'number' && value > 1) {
           world.initialize_grid(null, null, value);
           return world.fill_window();
-        }
-      });
-      return $('#source-link').click(function(evt) {
-        var available_height, top_offset, total_height;
-        evt.preventDefault();
-        console.log('clicked!');
-        $('#source-wrapper').toggleClass('hidden');
-        if ($('#source-wrapper').is(':visible')) {
-          top_offset = $('#source-wrapper').offset().top;
-          total_height = $(window).height();
-          available_height = total_height - top_offset - 40;
-          return $('#source-wrapper').css('height', available_height + 'px');
         }
       });
     };
