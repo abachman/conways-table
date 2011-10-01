@@ -1,7 +1,5 @@
 # Conway's Game of Life in HTML 
 
-*no canvas*, just an HTML table
-
 ### Uses:
 
 * Coffeescript
