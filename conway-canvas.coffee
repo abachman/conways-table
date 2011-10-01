@@ -20,7 +20,7 @@ window.CanvasWorld = class CanvasWorld extends World
       while arr.length < len
         if push == 'row'
           arr.push []
-        else 
+        else
           arr.push [0, 0, 0]
 
     if arr.length > len
@@ -46,7 +46,7 @@ window.CanvasWorld = class CanvasWorld extends World
     # how big is the screen
     @screen_width = window.innerWidth
     @screen_height = window.innerHeight
-    
+
     # set step size
     @step_x = @cell_size # Math.floor(@screen_width / @width)
     @step_y = @cell_size # Math.floor(@screen_height / @height)
@@ -67,7 +67,7 @@ window.CanvasWorld = class CanvasWorld extends World
 
   fill_window: ->
     console.log "FILLING CANVAS"
-    # cells are always an integer value width and height, 
+    # cells are always an integer value width and height,
     # so we color the background that we can see through the canvas
     $('body').css background: "#666"
     # all black
@@ -80,7 +80,7 @@ window.CanvasWorld = class CanvasWorld extends World
     # load drawing surface
 
     @fill_window()
-    
+
     $(window).resize =>
       @set_dimensions()
       @fill_window()
@@ -96,7 +96,7 @@ window.CanvasWorld = class CanvasWorld extends World
 
   dom_target: ->
     $(@display)
-  
+
   draw_cell: (x, y) ->
     # draw cell as it exists right now
     if @generational_coloring

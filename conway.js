@@ -5,21 +5,16 @@
       this.display = display;
       this.neighbor_matrix = [[[-1, -1], [0, -1], [1, -1]], [[-1, 0], [1, 0]], [[-1, 1], [0, 1], [1, 1]]];
       this.initialize_grid(x, y, cell_size);
-      this.draw_cells();
-      this.cache_cells();
-      this.bind_click();
       this.setting_mode = '';
       this.generational_coloring = false;
       console.log("INITIALIZED " + this.width + "x" + this.height + " WORLD");
     }
     World.prototype.initialize_grid = function(x, y) {
-      var _results;
       this.width = x;
       this.height = y;
       y = 0;
       x = 0;
       this.cells = [];
-      _results = [];
       while (y < this.height) {
         this.cells.push([]);
         while (x < this.width) {
@@ -27,9 +22,12 @@
           x += 1;
         }
         y += 1;
-        _results.push(x = 0);
+        x = 0;
       }
-      return _results;
+      this.draw_cells();
+      this.cache_cells();
+      this.bind_click();
+      return console.log("- initialized " + this.width + "x" + this.height + " grid");
     };
     World.prototype.dom_target = function() {
       return $('td', this.display);

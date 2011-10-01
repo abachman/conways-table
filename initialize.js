@@ -7,10 +7,16 @@
   };
   window.PIXEL = 16;
   window.running = false;
+  window.requestAnimFrame = (function() {
+    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function(callback, element) {
+      return window.setTimeout(callback, 1000 / 60);
+    };
+  })();
   $(__bind(function() {
-    var initialize_controls, runner, set_mode_labels, world;
+    var container, initialize_controls, runner, set_mode_labels, world;
     runner = null;
-    world = create_world(40, 20, 16, $('#container'));
+    container = $('#container');
+    world = create_world(40, 20, 16, container);
     world.set(PATTERNS.a_glider, {
       x: 2,
       y: 2
@@ -32,14 +38,17 @@
       if (show_modal) {
         $('#modal').removeClass('offscreen');
       }
-      clearInterval(runner);
       return window.running = false;
     }, this);
+    window.run = function() {
+      if (window.running) {
+        world.next();
+        return window.requestAnimFrame(window.run, container);
+      }
+    };
     window.start = __bind(function() {
-      runner = setInterval((function() {
-        return world.next();
-      }), window.DELAY);
-      return window.running = true;
+      window.running = true;
+      return window.run();
     }, this);
     $(document).bind('keydown', __bind(function(event) {
       switch (event.keyCode) {

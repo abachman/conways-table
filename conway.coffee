@@ -11,15 +11,6 @@ window.World = class World
     ]
 
     @initialize_grid(x, y, cell_size)
-    
-    # draw the grid, all dead cells
-    @draw_cells()
-
-    # keep DOM elements handy
-    @cache_cells()
-
-    # bind to toggle or set
-    @bind_click()
 
     # default to toggling the clicked cell
     @setting_mode = ''
@@ -45,6 +36,17 @@ window.World = class World
         x += 1
       y += 1
       x = 0
+
+    # draw the grid, all dead cells
+    @draw_cells()
+
+    # keep DOM elements handy
+    @cache_cells()
+
+    # bind to toggle or set
+    @bind_click()
+
+    console.log "- initialized #{@width}x#{@height} grid"
 
   # the element that bind_click will bind to
   dom_target: ->
@@ -127,12 +129,12 @@ window.World = class World
         if nx < 0
           nx += self.width
         else if nx >= self.width
-          nx -= self.width 
+          nx -= self.width
         ny = coords[1] + y
         if ny < 0
           ny += self.height
         else if ny >= self.height
-          ny -= self.height 
+          ny -= self.height
         living += self.cells[ny][nx][0]
     living
 
@@ -158,13 +160,13 @@ window.World = class World
         if nx < 0
           nx += self.width
         else if nx >= self.width
-          nx -= self.width 
+          nx -= self.width
 
         ny = point.y + py
         if ny < 0
           ny += self.height
         else if ny >= self.height
-          ny -= self.height 
+          ny -= self.height
 
         self.cells[ny][nx][0] = value
         self.cells[ny][nx][1] = value
@@ -202,7 +204,7 @@ window.World = class World
         {x, y} = self.get_clicked_point(evt)
         unless self.cells[y][x][0] is 1
           self.cells[y][x] = [1,1,1]
-          self.draw_cell x, y 
+          self.draw_cell x, y
 
 
     @dom_target().bind 'mouseup', (evt) ->
@@ -225,7 +227,7 @@ window.World = class World
           else
             console.log 'point'
             self.toggle point
-            self.draw_cell point.x, point.y 
+            self.draw_cell point.x, point.y
       self.tracking = false
 
   toggle_mode: (mode) ->

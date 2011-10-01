@@ -1,4 +1,4 @@
-window.PATTERNS = 
+window.PATTERNS =
   a_gun: [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -32,17 +32,29 @@ window.PIXEL = 16;
 # current activity
 window.running = false
 
+# Paul Irish's requestAnimationFrame shim
+window.requestAnimFrame = (->
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          window.oRequestAnimationFrame      ||
+          window.msRequestAnimationFrame     ||
+          (callback, element) ->
+            window.setTimeout(callback, 1000 / 60)
+)()
+
 $ =>
   runner = null
+  container = $('#container')
 
   # defined by conway and overridden conway-canvas
-  world = create_world(40, 20, 16, $('#container'))
+  world = create_world(40, 20, 16, container)
 
   # somethin on screen
   world.set PATTERNS.a_glider, {x: 2, y: 2}, 0
 
   set_mode_labels = () ->
-    if running 
+    if running
       $('#mode-viewer').addClass 'offscreen'
     else
       $('#mode-viewer').removeClass 'offscreen'
@@ -53,15 +65,21 @@ $ =>
     else
       $("##{world.setting_mode}").removeClass 'invisible'
 
-  window.pause = (show_modal) => 
+  window.pause = (show_modal) =>
     $('#modal').removeClass('offscreen') if show_modal
-    clearInterval runner
+    # clearInterval runner
     window.running = false
 
+  # make world step if running == true
+  window.run = ->
+    if window.running
+      world.next()
+      window.requestAnimFrame(window.run, container)
+
+  #
   window.start = =>
-    # START
-    runner = setInterval((-> world.next()), window.DELAY)
     window.running = true
+    window.run()
 
   $(document).bind 'keydown', (event) =>
     # console.log event.keyCode
