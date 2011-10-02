@@ -76,7 +76,6 @@ $ =>
       world.next()
       window.requestAnimFrame(window.run, container)
 
-  #
   window.start = =>
     window.running = true
     window.run()

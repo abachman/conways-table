@@ -66,8 +66,8 @@
       this.step_y = this.cell_size;
       this.canvas.width = this.screen_width;
       this.canvas.height = this.screen_height;
-      this.width = Math.floor(this.screen_width / this.cell_size);
-      this.height = Math.floor(this.screen_height / this.cell_size);
+      this.width = (0.5 + (this.screen_width / this.cell_size)) << 0;
+      this.height = (0.5 + (this.screen_height / this.cell_size)) << 0;
       this.correct_array_for_length(this.cells, 'row', this.height);
       _ref = this.cells;
       _results = [];
@@ -109,8 +109,8 @@
     CanvasWorld.prototype.cache_cells = function() {};
     CanvasWorld.prototype.get_clicked_point = function(evt) {
       return {
-        x: Math.floor(evt.offsetX / this.step_x),
-        y: Math.floor(evt.offsetY / this.step_y)
+        x: (0.5 + (evt.offsetX / this.step_x)) << 0,
+        y: (0.5 + (evt.offsetY / this.step_y)) << 0
       };
     };
     CanvasWorld.prototype.dom_target = function() {

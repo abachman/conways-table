@@ -48,17 +48,18 @@ window.CanvasWorld = class CanvasWorld extends World
     @screen_height = window.innerHeight
 
     # set step size
-    @step_x = @cell_size # Math.floor(@screen_width / @width)
-    @step_y = @cell_size # Math.floor(@screen_height / @height)
+    @step_x = @cell_size
+    @step_y = @cell_size
 
     # set canvas size. DO NOT USE jQuery CSS!
     @canvas.width = @screen_width
     @canvas.height = @screen_height
 
     # of x cells
-    @width = Math.floor(@screen_width / @cell_size)
+    ## FASTER than Math.floor()
+    @width = (0.5 + (@screen_width / @cell_size)) << 0
     # of y cells
-    @height = Math.floor(@screen_height / @cell_size)
+    @height = (0.5 + (@screen_height / @cell_size)) << 0
 
     @correct_array_for_length(@cells, 'row', @height)
 
@@ -90,8 +91,8 @@ window.CanvasWorld = class CanvasWorld extends World
 
   get_clicked_point: (evt) ->
     {
-      x: Math.floor(evt.offsetX / @step_x)
-      y: Math.floor(evt.offsetY / @step_y)
+      x: (0.5 + (evt.offsetX / @step_x)) << 0
+      y: (0.5 + (evt.offsetY / @step_y)) << 0
     }
 
   dom_target: ->
