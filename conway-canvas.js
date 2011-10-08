@@ -56,7 +56,10 @@
       }
       this.canvas = window.document.getElementById(this.display.attr('id'));
       this.context = this.canvas.getContext('2d');
-      return this.set_dimensions();
+      this.set_dimensions();
+      this.draw_cells();
+      this.cache_cells();
+      return this.bind_click();
     };
     CanvasWorld.prototype.set_dimensions = function() {
       var row, _i, _len, _ref, _results;

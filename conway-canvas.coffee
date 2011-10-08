@@ -40,6 +40,16 @@ window.CanvasWorld = class CanvasWorld extends World
 
     @set_dimensions()
 
+    # draw the grid, all dead cells
+    @draw_cells()
+
+    # keep DOM elements handy
+    @cache_cells()
+
+    # bind to toggle or set
+    @bind_click()
+
+
   # force @display to fill the window
   set_dimensions: ->
 
